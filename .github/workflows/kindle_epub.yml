@@ -1,0 +1,95 @@
+name: Send EPUB to Kindle Daily
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # 1 AM UTC = 7 AM IST
+  workflow_dispatch:      # Allows manual triggering
+
+jobs:
+  send-epub:
+    runs-on: ubuntu-latest
+
+    env:
+      KINDLE_EMAIL: pramodshah6797_37OKiT@kindle.com
+      SENDER_EMAIL: ajaykg6917@gmail.com
+      GIT_REPO_URL: https://gitlab.com/Monkfishare/2025.git
+
+    steps:
+    - name: Install Calibre
+      run: |
+        sudo apt update
+        sudo apt install -y calibre
+    - name: Clone EPUB Repo
+      run: |
+        git clone $GIT_REPO_URL repo
+
+    - name: Find and Send Latest EPUB
+      run: |
+        YYY=$(date +%Y)
+        cd repo/TE/$YYY || exit 1
+        latest_folder=$(ls -d [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] | sort -r | head -n 1)
+        cd "$latest_folder" || exit 1
+        latest_epub=$(ls -t *.epub | head -n 1)
+        if [ -z "$latest_epub" ]; then
+            echo "No EPUB file found."
+            exit 1
+        fi
+        echo "Latest EPUB file found: $latest_epub"
+
+    - name: Find and Send Latest EPUB
+      run: |
+        which calibre-smtp || echo "calibre-smtp not found"
+        whereis calibre-smtp
+        calibre-smtp --version || echo "calibre-smtp not working" 
+        echo "PATH variable is: $PATH"
+    
+        # Debug: Print the latest EPUB file found
+        echo "Latest EPUB file found: $latest_epub"
+        echo "📅 Current year: $(date +%Y)"
+        year_dir="/data/repo/TE/$(date +%Y)"
+        
+        if [ ! -d "$year_dir" ]; then
+          echo "❌ Directory does not exist: $year_dir"
+          echo "Available in /data/repo/TE:"
+          ls -l /data/repo/TE || true
+          exit 1
+        fi
+        
+        cd "$year_dir"
+        
+        echo "📁 Listing date folders:"
+        ls -d */ || true
+        
+        latest_folder=$(ls -d [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] 2>/dev/null | sort -r | head -n 1)
+        
+        if [ -z "$latest_folder" ]; then
+          echo "❌ No valid date folders found in $year_dir"
+          exit 1
+        fi
+        
+        echo "✅ Latest folder is: $latest_folder"
+        cd "$latest_folder"
+        
+        echo "📚 EPUBs in $latest_folder:"
+        ls -lh *.epub || echo "❌ No EPUB files found in $latest_folder"
+        
+        latest_epub=$(ls -t *.epub 2>/dev/null | head -n 1)
+        
+        if [ -z "$latest_epub" ]; then
+          echo "❌ Still no EPUB file found after checking."
+          exit 1
+        fi
+        
+        echo "✅ Latest EPUB file found: $latest_epub"
+
+        
+    - name: Send it with calibre-smtp
+      run: |
+        /usr/bin/calibre-smtp \
+          --attachment "$(pwd)/$latest_epub" \
+          --relay smtp.gmail.com \
+          --port 587 \
+          --username "${{ secrets.GMAIL_USER }}" \
+          --password "${{ secrets.GMAIL_APP_PASSWORD }}" \
+          "$SENDER_EMAIL" "$KINDLE_EMAIL" \
+          "Your Daily Economist" "Attached is the latest Economist EPUB."

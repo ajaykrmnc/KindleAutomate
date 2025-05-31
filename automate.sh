@@ -39,7 +39,7 @@ fi
     --relay smtp.gmail.com \
     --port 587 \
     --username "ajaykg6917@gmail.com" \
-    --password "uhdh ijrj jweq xxxx" \
+    --password "uhdh ijrj jweq ziqb" \
     "$SENDER_EMAIL" "$KINDLE_EMAIL" \
     "Your Daily Economist" "Attached is the latest Economist EPUB."
 
