@@ -35,14 +35,12 @@ jobs:
             exit 1
         fi
         echo "Latest EPUB file found: $latest_epub"
-        
-    - name: Send it with calibre-smtp
-      run: |
         /usr/bin/calibre-smtp \
-          --attachment "$(pwd)/$latest_epub" \
+          --attachment "$latest_epub" \
           --relay smtp.gmail.com \
           --port 587 \
           --username "${{ secrets.GMAIL_USER }}" \
           --password "${{ secrets.GMAIL_APP_PASSWORD }}" \
           "$SENDER_EMAIL" "$KINDLE_EMAIL" \
           "Your Daily Economist" "Attached is the latest Economist EPUB."
+        
