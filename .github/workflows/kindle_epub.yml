@@ -2,7 +2,7 @@ name: Send EPUB to Kindle Daily
 
 on:
   schedule:
-    - cron: '15 2 * * *'  # 1 AM UTC = 7 AM IST
+    - cron: '*/5 * * * *'  # 1 AM UTC = 7 AM IST
   workflow_dispatch:      # Allows manual triggering
 
 jobs:
