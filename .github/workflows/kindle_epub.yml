@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      KINDLE_EMAIL: pramodshah6797_37OKiT@kindle.com
+      KINDLE_EMAIL: pramodshah@kindle.com
       SENDER_EMAIL: ajaykg6917@gmail.com
       GIT_REPO_URL: https://gitlab.com/Monkfishare/2025.git
 
