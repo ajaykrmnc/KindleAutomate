@@ -3,7 +3,7 @@
 # === Configurations ===
 REPO_PATH="$HOME/Desktop/KindleAutomate/economist-epub"     # Local path to clone the repo
 GIT_REPO_URL="https://gitlab.com/Monkfishare/2025.git"
-KINDLE_EMAIL="pramodshah6797_37OKiT@kindle.com"
+KINDLE_EMAIL="pramodshah@kindle.com"
 SENDER_EMAIL="ajaykg6917@gmail.com"  # Must be on Amazon whitelist
 
 # === Step 1: Clone or pull latest changes ===
